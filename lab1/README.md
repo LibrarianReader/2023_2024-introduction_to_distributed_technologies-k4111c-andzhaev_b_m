@@ -1,3 +1,23 @@
+# Лабораторная работа №1 "Установка Docker и Minikube, мой первый манифест."
+
+University: [ITMO University](https://itmo.ru/ru/)
+
+Faculty: [FICT](https://fict.itmo.ru)
+
+Course: [Introduction to distributed technologies](https://github.com/itmo-ict-faculty/introduction-to-distributed-technologies)
+
+Year: 2023/2024
+
+Group: K4111
+
+Author: Andzhaev Batnasan Mukobenovich
+
+Lab: Lab1
+
+Date of create: 17.12.2024
+
+Date of finished: 
+
 **1. Развернуть minikube cluster**
 ```
 $ minikube start
