@@ -16,7 +16,7 @@ Lab: Lab3
 
 Date of create: 21.12.2024
 
-Date of finished: 
+Date of finished: 21.12.2024
 
 **1. Развернуть minikube cluster**
 ```
