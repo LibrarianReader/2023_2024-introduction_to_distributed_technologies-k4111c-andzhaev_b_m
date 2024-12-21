@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: react-env
+data:
+  react_app_username: "andzhaev"
+  react_app_company_name: "itmo"
+
+---
+
+apiVersion: apps/v1
+kind: ReplicaSet                                            
+metadata:
+  name: react-repset                   
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: react
+  template:
+    metadata:
+      labels:
+        app: react
+    spec:                                      
+      containers:
+        - image: ifilyaninitmo/itdt-contained-frontend:master
+          name: react                           
+          ports:
+          - name: react-port
+            containerPort: 3000
+          env:
+            - name: REACT_APP_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: react-env
+                  key: react_app_username
+            - name: REACT_APP_COMPANY_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: react-env
+                  key: react_app_company_name
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-service
+spec:
+  selector:
+    app: react
+  type: ClusterIP
+  ports:
+    - port: 3020
+      name: react-port
+      targetPort: react-port
+      protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: react-tls
+type: kubernetes.io/tls
+data:
+  tls.crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUREVENDQWZXZ0F3SUJBZ0lVZVcrYzlBZ1NQcGNrM0Z1TUpvZElnT2QyUm5zd0RRWUpLb1pJaHZjTkFRRUwKQlFBd0ZqRVVNQklHQTFVRUF3d0xZVzVrZW1oaFpYWXViV1V3SGhjTk1qUXhNakl4TVRNeU5URTBXaGNOTWpVeApNakl4TVRNeU5URTBXakFXTVJRd0VnWURWUVFEREF0aGJtUjZhR0ZsZGk1dFpUQ0NBU0l3RFFZSktvWklodmNOCkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFLcEs2SjZEbmpVeTg4dC9Gd2RHQktKSjFBU2hrUUk1KzBKS0I0VmgKdm5NbVRZbnJ5S3ZVODdmN0ZtMFc1c3I3cTByNm1ZcEJ3WlN3eXFEYUpqSzRsRXBKNzc0eDdQN2RwUG94a21oRQpEOXVhbWJTK2FFQU1LOENqOFR0WEhwTFVUYzBjclY1cUNjVkg5MnZEQXNoUzVVZlRsemZKYlhITlNkNDFoQ1ZMCkR3akdjQXFQaytvU0VzQXNlSUsyQ0pBdDVESURBVGVPa1NMZnZnMGxnczVCN3RFOEg3ZU13VU45NUN5YzRTMVgKdHV0M2RnRXdQcTNWbnlnbFZZdlpweDRWU1J5Ni84cmFnN1BKMVlpTEgrTUsrMER3Vlp6eWRKR2ZZN2NmMFZrUgpibTVVdHE3UGF6NzVWSUJzakNsODlTYXFnSzh4aTQyYlExYzFSLy9MYnpNaXB6MENBd0VBQWFOVE1GRXdIUVlEClZSME9CQllFRkdsbnhvSmQ5RlgzSUpVVDJnQmhzWFhoY0VaYk1COEdBMVVkSXdRWU1CYUFGR2xueG9KZDlGWDMKSUpVVDJnQmhzWFhoY0VaYk1BOEdBMVVkRXdFQi93UUZNQU1CQWY4d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQgpBQkphQnZMVDcvQzRmb1FUM0txZitDcXhqTHlqUnY4NFRBSm5tRHpyQWpzM3h5dlNzNkdNSW1hejc3YjA2eWVuCmVJdnFzdEhOR3VvZW5ld2d2UGFIbTNaNGR6YUxVOWt3dFpNeXhKb0xNVHpySm0vNVVhUHpVOWxyajFpM1lid0cKeFVvUzcxdElUeWg1YmsvQWRmZ2JibHVlckFjaTZWMXAwNTJ6M2VVUG1nWTc0ekVSUURpSENTUzVFMiszR1V6UgpNbXhVcUVoOUM4RUN3cEFLYWJKRzZRNDJZWmpQMmlsTDhNVjRYRmxxbW8wN0ZJSjVyeDJaaStweFAxU3c3WTV0CjI4cnpsSHM4SkhSVXhVdWd4dnFFaFBiWXRDWG5tVzJxNitxcHR1UmpuZVp0UmF3NHFxVnI2NmpnT0NBb2pINVAKcmV0K0tBd1lHb2xaT2hpQ0YxdWxrcFk9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  tls.key: LS0tLS1CRUdJTiBQUklWQVRFIEtFWS0tLS0tCk1JSUV2QUlCQURBTkJna3Foa2lHOXcwQkFRRUZBQVNDQktZd2dnU2lBZ0VBQW9JQkFRQ3FTdWllZzU0MU12UEwKZnhjSFJnU2lTZFFFb1pFQ09mdENTZ2VGWWI1ekprMko2OGlyMVBPMyt4WnRGdWJLKzZ0SytwbUtRY0dVc01xZwoyaVl5dUpSS1NlKytNZXorM2FUNk1aSm9SQS9ibXBtMHZtaEFEQ3ZBby9FN1Z4NlMxRTNOSEsxZWFnbkZSL2RyCnd3TElVdVZIMDVjM3lXMXh6VW5lTllRbFN3OEl4bkFLajVQcUVoTEFMSGlDdGdpUUxlUXlBd0UzanBFaTM3NE4KSllMT1FlN1JQQiszak1GRGZlUXNuT0V0VjdicmQzWUJNRDZ0MVo4b0pWV0wyYWNlRlVrY3V2L0syb096eWRXSQppeC9qQ3Z0QThGV2M4blNSbjJPM0g5RlpFVzV1VkxhdXoycysrVlNBYkl3cGZQVW1xb0N2TVl1Tm0wTlhOVWYvCnkyOHpJcWM5QWdNQkFBRUNnZ0VBQnFPOWpxS2ttai9tbEFaY1JEOFZZcXQ4dmdKN3FDblJFMXhXRHp3SXBDNDMKNHpzRGU3bWxtQVNNOHd0cnk3bkV5N3RhSGJNakpGUkJUa1M3TFFxWDA0NnU3NHc4U0pLbFFsRUkrNUk5eVFydAoxOGQ5d3BPRzZDK3NNZXRiYUkrcENlaUdsUElPOS9kdW5PL0JUY1MzcGxXSVpaY3ZzbnAxMlJsZWtlS3JqeVMzCkhkc0RFb1JXbHhDRlUwWHJjUlN6Vy90MmIxbFlteTduUkRmamJWZFdHeEE3NHpueTUwWEY0K0lBbE5zN0lDZGsKMFpYWWRpWE1VVVNQSzVicGw4T2hvbDUveVFMUDZqZGF6dVBiWGFEVUd6cW5jVzF1ekJXM1Z5MEkzTzRSTE5VTwpqS0NzQVVQcUNlZEh3QTFkbTkwVURHUTArK0lxeFlWT0V3OGF4Y3RybVFLQmdRRHZicHEyakIra1RQSldnazRXCjk2eEw2SmthaFZia0RlZy9LcDR0UkQ4MlZXaWNFd2pnY3pVUVdheXkzejJ6aFV6Q0hiM09lRXl0V01aMFdaVC8KTE82c01uUHFxU0F0ay9OclFtMHFoWmNvNzg5dzVtNlZ6TmNkeFVjSkE0cVNIZlhqU1hsamdXYmZjMEViU0tuMgpDMlVHYmErUHVmRkNFL01oclN2b3dLZ2hPUUtCZ1FDMkU0cGYxTWJEeEtSZHJ0U0dFamZEakhzZHlzOWNyZ1phCmJoamRWOWRZY01XUmVPYU1YQm5zbEU3STlNZVdUdVdOV0JKdU5NSHR4VjFJYkVybVBXdUFQS1JqNXVKTEFEb1kKLzZVTy9UUlVqWU8xcEhnVGFpTkdSL2dXTlFZQzBnbXQrNlNRRExvZ0hMRU1hSmJyUHl0V2ZoZzVsUlUybmpISQo2YnhTQ1BhcUpRS0JnRVF0OUxSaXRtZnMyVjAxQWRPY2QxMnVRRnJDK1hrN1ZKVVlKNjZ3TG1ma2JrTnpVQ1hKCjZLUmRSTVl5dDdrMURpU0FuNW41dTZ2cENhbjhFR2VSZmUxZStJOHIxZFBrdTM0aGprQjdoZzNNSy8vMFBpMCsKQlV1ZTc1bHJmcndZOS9uZTVFZ25nd25DSWhvSTJRME5OWmxkQm84ZzNjaDVNZFMzSVRmSUZKaFJBb0dBQjBCTAorSGtPMldrUmFyRzF3UWtrczJMNjNEcmhlejFxLzFyM0hvbUxCL2lseFo5Yy95WUQya29sd1JjT2c4dnNsRzUzCmZYQVljUkcxSDFkQXZGNmgwMStXNUd1amczMGsweTRMTXNlZXQrZFM0WDhGVVRDZTZ3T2V1N09zNDV2ZHl0SUUKd2IvZ0FidGl5YTI0cFBIRkZoSzdnRCtSc3JVbUltdzhsYi9Kb3drQ2dZQlNZaFMwVzVoYUkwZ0dsZEZvOVRnNQp6b2lINm9JeUtpeGh6SkRCZ1h6VEhqTzQ0NUs2UE5NcGlySWJLakVaZldXMFhBUEZXeW1VMXRmVjdmdlJnaUtFCmFHaW4vYmJPVTkvc2hISlFJNEpzUmdkS1VkUldSTVYyWmp1YzdVT0ZmNGZjZlZKaEVFUndYemlPdW55bmI3MGoKUlBjRnZpZmRMM2dWanpVMDRmQVc4QT09Ci0tLS0tRU5EIFBSSVZBVEUgS0VZLS0tLS0K
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: react-ingress
+spec:
+  tls:
+    - secretName: react-tls
+      hosts:
+        - andzhaev.me
+  rules:
+    - host: andzhaev.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: react-service
+                port:
+                  number: 3020
