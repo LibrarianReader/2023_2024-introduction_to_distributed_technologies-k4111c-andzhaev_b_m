@@ -19,7 +19,7 @@ spec:
         image: ifilyaninitmo/itdt-contained-frontend:master
         env:
         - name: REACT_APP_USERNAME
-          value: gukasyan
+          value: andzhaev
         - name: REACT_APP_COMPANY_NAME
           value: itmo
         ports:
