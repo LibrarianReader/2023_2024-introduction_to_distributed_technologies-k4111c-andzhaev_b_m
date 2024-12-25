@@ -68,7 +68,6 @@ spec:
 ```
 $ kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/calico.yaml
 ```
-![image](https://github.com/user-attachments/assets/06461263-5430-4809-a6c1-7f90efe99c70)
 
 **6. Создание deployment**
 ```
