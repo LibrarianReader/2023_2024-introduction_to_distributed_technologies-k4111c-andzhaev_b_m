@@ -127,9 +127,8 @@ $ kubectl apply -f service.yaml
 localhost:3000
 ```
 
-![image](https://github.com/user-attachments/assets/709596e3-2859-4bff-9348-694cc1d3d93f)
+![photo_2024-12-22_15-41-22](https://github.com/user-attachments/assets/7cac1ab2-80ef-44d6-9954-a4d7f2d14dd4)
 
-![image](https://github.com/user-attachments/assets/e597cfda-3318-4e70-9d1b-05487586340c)
 
 
 **10. Узнать информацию о FQDN имена подов**
