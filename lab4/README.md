@@ -16,7 +16,7 @@ Lab: Lab4
 
 Date of create: 22.12.2024
 
-Date of finished: 
+Date of finished: 26.12.2024
 
 **1. Установка плагина и режима работы Multi-Node Clusters**
 ```
